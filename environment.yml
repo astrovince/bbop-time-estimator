@@ -4,12 +4,13 @@ channels:
   - defaults
 dependencies:
   - python>=3.5
-  - astropy>=3.0
   - jupyter
   - matplotlib
   - numpy
   - pandas
   - scipy
-  - math
-  - os
-  - csv
+  - pip
+  - pip:
+    - math
+    - os
+    - csv
