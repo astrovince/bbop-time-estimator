@@ -52,7 +52,8 @@ import math
 #print( "   getSensitivity      computes the sensitivity limit of an observation from S/N, area and obs mode")
     
 # When using a distributed version of this script you need to update this path
-pathToFilter = '/Users/vreveret/Work/SPICA/B-BOP/InstrumentScientistStuff/TimeEstimator/Marc_Script/'
+#pathToFilter = '/Users/vreveret/Work/SPICA/B-BOP/InstrumentScientistStuff/TimeEstimator/Marc_Script/'
+pathToFilter = os.getcwd()
 # to the location where you have stored the file BandProfile.csv 
 
 
