@@ -123,7 +123,7 @@ telNumMirrors = 1
 # B-BOP parameters - Do not change those unless you really know what you are doing!
 # band definitions - MS I believe (and hope) that is is the only installation dependent
 # element.
-bandProFile = pathToFilter+'BandProfile.csv'
+bandProFile = pathToFilter+'/BandProfile.csv'
 #bandProFile = pathToFilter+'BandProfileAP.csv'
 # Pixel sizes in arc-second, warning band 1 is in pixBand[0]
 pixSizeBand = np.array([3.5,10,20])
