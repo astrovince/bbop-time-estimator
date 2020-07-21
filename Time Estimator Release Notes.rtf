@@ -1,0 +1,233 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2513
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica;\f2\fmodern\fcharset0 Courier;
+\f3\fswiss\fcharset0 Helvetica-Oblique;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww19180\viewh19580\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs24 \cf0 Release Notes for timeEstimator3.py\
+
+\f1\b0 \
+
+\f2 timeEstimator3.py
+\f1  is a Python 3 package that contains a number of functions that are useful or necessary to proceed to the sensitivity estimation of B-BOP observations, or to the time estimate for sensitivity goals.\
+This package must be accompanied by the file 
+\f2 BandProfile.csv
+\f1  that contains the band profiles, and whose path in the local installation must be updated in variable 
+\f2 pathToFilter
+\f1 \
+\
+The structure of the package is as follows:\
+- In a first part a (large) number of parameters are instantiated to reference values. These range from telescope to instrument to astrophysical parameters. The principles of the package development is to be transparent/clear in the assumptions made to derive the performances, rather than hide them in relatively obscured function variables. We have separated that sections in two, the first one containing the parameters that can or should be updated (such as the variable 
+\f2 pathToFilter 
+\f1 that indicate where the filter profiles are stored), and the second part that should not be modified (apart for testing purposes).\
+- In a second part we have the functions themselves. We have adopted a rather extreme modular approach so that each function usually performs a single task, and some functions simply call on to other to perform this single task. This should help maintain and understand what the package does.\
+\
+One way to make the package accessible is to \'93run\'94 it within a Python session with\
+
+\f2 runfile(pathToPackage+\'92timeEstimator.py\'92)\
+
+\f1 Where 
+\f2 pathToPackage
+\f1  is the path to your local installation of the package.\
+\
+\ul Function list and brief explanations (see the code for full explanations).\ulnone \
+\
+
+\f2 getSensitivity
+\f1  & 
+\f2 getSensPolar
+\f1 \
+These two functions compute the sensitivity for a map, either in total power mode or in polarisation mode. They are the main one that users of the package should call.\
+Their arguments are the desired signal to noise, the area to be mapped, and for the polarisation mode, the polarisation fraction.\
+While for 
+\f2 getSensitivity
+\f1  the S/N applies to the source\'92s total power, for 
+\f2 getSensPolar
+\f1  it applies to the polarisation fraction.\
+The functions return the total observing time, and the sensitivities in the different bands for point and extended sources.\
+\
+
+\f2 getMyObsTime\
+
+\f1 This function is a \'93utility\'94 function as those below but it serves a singular purpose which is to make the code behave as a user expects a time estimator to behave: provided with a \'93science\'94 goal for an observation it delivers the time needed to reach it. The goal is specified in terms of flux value to reach in a given band, with a specific S/N, on a given area. In case a polarisation measurement is requested, one need to specify as well the polarisation fraction goal and the S/N now applies to the polarisation fraction. It functions by deriving a scaling between the science goals and the performance predicted by 
+\f2 getSensitivity
+\f1  or 
+\f2 getSensPolar
+\f1 , and using this scaling to define how many repetitions of the map will deliver the sensitivity.\
+\
+
+\f3\i Functions below are \'93utility\'94 functions, they are used by the previous functions to compute sensitivity figures
+\f1\i0 \
+\
+
+\f2 getObsTime
+\f1 \
+This function returns the total observing time as well as the on-source time for an observation defined by the scan speed, the area to map and an observing mode.\
+\
+
+\f2 compTelNEP
+\f1 , 
+\f2 compISMNEP, compZodiNEP
+\f1 , 
+\f2 compCMBNEP
+\f1 , 
+\f2 compCIBNEP
+\f1 , 
+\f2 comp4KNEP
+\f1 , 
+\f2 comp2KNEP\
+
+\f1 These functions compute the noise equivalent power of thermal components that are contributing to the background, namely the telescope, the zodiacal light, the Galactic ISM, the cosmological microwave background, the cosmic infrared background, the 4K and 2K optical components in B-BOP. All these are considered as black or grey bodies described by parameters instantiated in the first part of the package.\
+\
+
+\f2 getNEP
+\f1 \
+This functions compute the total noise equivalent power of the detection system, therefore aggregates the above component with the detector NEP. It incorporates options to compute only the thermal NEP falling on a pixel.\
+\
+
+\f2 filterTrans
+\f1 \
+Provides when needed the filter transmission profiles\
+\
+
+\f2 getBeamProfile
+\f1 \
+Computes the beam profile from the telescope parameters (diameter and obscuration), reruns the profile, the encircled energy profile, the FWHM and the radius of the first Airy dark ring.\
+\
+
+\f2 compSrcPixPow
+\f1 \
+Using an input flux value (spectral density) it computes how much power this places on a pixel, assuming either that the source is extended or point like (using the same hypothesis for how the flux of a point source is spread between pixel as the sensitivity computation).\
+\
+
+\f2 compPixPowSrc
+\f1 \
+Using a power per pixel value, this gives the flux (spectral density) of a source that would produce it, assuming either that it is an extended or a point source.\
+\
+
+\f2 convPow2Flux
+\f1 \
+Simply converts a power (W) per pixel into a spectral density (mJy) per pixel \
+\
+
+\f3\i Related functions (not used for the sensitivity estimation proper but of interest)
+\f1\i0 \
+\
+
+\f2 compTelForeground
+\f1 , 
+\f2 compZodiForeground
+\f1 , 
+\f2 compISMForeground, compCMBForeground
+\f1 , 
+\f2 compCIBForeground
+\f1 , 
+\f2 comp4KForeground
+\f1 , 
+\f2 comp2KForeground
+\f1 \
+Computes the foreground contribution of these elements, integrated within the B-BOP bands\
+\
+
+\f2 getForeground
+\f1 \
+Calls all the previous functions to compute the total foreground contribution in B-BOP\'92s bands.\
+\
+
+\f2 mkForegroundFig
+\f1 \
+Makes a nice plot of the foregrounds contribution as a function of wavelength, with the B-BOP bands overlaid.\
+\
+
+\f3\i Deeper utility functions (there is no reason a user would call these, they are accomplishing technical tasks in the package)\
+\
+
+\f2\i0 getPixSizeBand
+\f3\i \
+
+\f1\i0 Computes the pixel size per band. In principle the pixel size is adjusted to realise a fixed sampling of the beam. Since the telescope diameter can vary, the beam is computed, and the pixel size may have to be changed. There is still the possibility to used a default value of the pixel size by setting \
+
+\f2 useDef = True
+\f1 \
+In the preamble. In that case the default pixel sizes are taken from variable 
+\f2 defPixSizeBand
+\f1  (also defined in the preamble)\
+By default, the code uses the default pixel size values. This makes for faster execution. \
+\
+
+\f2 getGeomQuant
+\f1 \
+Since the beam and the pixel size may evolve, or at least are computed by the code, some geometrical quantities that depend on it have to be computed to. These are:\
+
+\f2 bbopFoV
+\f1  the size of the B-BOP field of view made of 16x16 pixels at 200\'b5m\
+
+\f2 diam4 
+\f1 the diameter of an aperture having the same surface as a square of 2x2 pixels, expressed in units of the FWHM\
+
+\f2 eefD4Band
+\f1  the encircled energy fraction of the beam in that aperture.\
+\
+
+\f2 checkBandForError
+\f1 \
+Verifies that the band index supplied as an argument is within the B-BOP accepted values\
+\
+
+\f2 reSample
+\f1 \
+Resamples any gridded (multi-dimensional) function on another grid\
+\
+There are also deprecated functions that have not been removed from the code, but that are not used. They may not function anymore. They are clearly marked in the code.\
+\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+Release notes proper\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+20191016\
+First release of the package. Only the total power mode sensitivity estimation is provided.\
+\
+20191212\
+Computations of the sensitivity in polarisation mode is implemented.\
+Modified the name of function mkBackgroundFig into mkForegroundFig for consistency with other names (but background and foreground is the same thing in the optically thin regime).\
+\
+20200117\
+Ported the code to Python 3, Not necessarily optimised for Python 3 coding standards as only modifications deal with print statements. Nevertheless verified that Python 3 and Python 2 version give the same numerical results. Python 2 version will no longer be updated and thus should no longer be used. To materialise that update the package is now named 
+\f2 timeEstimator3.py\
+\
+
+\f1 20200406\
+Added the 
+\f2 getMyObsTime 
+\f1 function to make it work more like a time estimator.\
+\
+20200520\
+Implemented the following changes:\
+- Modified the formalism to account for thermal NEP, closer to the actual design of the pixels and signal generation (in getNEP)\
+- Corrected a error in the representation of the pixel cross-section to incoming light\
+- Introduced a zero-order method to investigate the impact of stray-light\
+\
+20200623\
+Implemented the following changes:\
+- Telescope is now characterised by the M1 diameter and the total collecting surface (currently above the value of the MRD requirement).\
+- Introduce a consistent computation of some geometrical quantities that depend on the beam profile and pixel size (field of view, FWHM\'85). \
+- Add the possibility to adjust the pixel size to their optimal value given the beam. By default this adjustment is disabled and a default pixel size is used (
+\f2 useDef=True
+\f1 ).\
+- Introduced the internal slew times to produce an estimation of the internal observation efficiency.\
+- Modified the argument of 
+\f2 getMyObsTime
+\f1  for the source type from 
+\f2 type
+\f1  to 
+\f2 src
+\f1  as 
+\f2 type
+\f1  is a python statement\
+- Implemented the telescope emissivity law. As this decreases the emissivity by more than an order of magnitude, this has a high impact.\
+- Included the Galactic ISM component in the background and NEP, using a rather good fit to the Euclid background model\
+- Included the possibility to use 5 different background cases: R: reference to past settings, E: ecliptic, X: extragalactic, GL: galactic low background, GH: galactic high background. This is selected by setting variable 
+\f2 useFGCase 
+\f1 to 0,1,2,3, or 4\
+}
